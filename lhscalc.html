@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Ensures proper rendering and touch zooming -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lambert High School GPA Calculator</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        /* Sidebar styling */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        /* Styling for links in the sidebar */
+        .sidebar a {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #d00000;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        /* Changes background color of links on hover */
+        .sidebar a:hover {
+            background-color: #a00000;
+        }
+        /* Content area styling */
+        .content {
+            margin-left: 200px;
+            width: calc(100% - 200px);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        /* Container styling for better presentation */
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        /* Styling for various elements within the form */
+        h2, .logo img, form, label, select, input[type="number"], .button-container, button {
+            text-align: center;
+        }
+        /* Heading color and margin */
+        h2 {
+            color: #d00000;
+            margin-bottom: 20px;
+        }
+        /* Logo image styling */
+        .logo img {
+            width: 100px;
+            height: auto;
+            margin: 0 auto 20px;
+        }
+        /* Form margin top */
+        form {
+            margin-top: 20px;
+        }
+        /* Label styling */
+        label {
+            display: block;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        /* Input and select styling */
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        /* Button container styling */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        /* Button styling */
+        button {
+            background-color: #d00000;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        /* Changes button background color on hover */
+        button:hover {
+            background-color: #a00000;
+        }
+        /* Styling for the result display area */
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        /* Initially hidden counselor button */
+        .counselor-button {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        /* Styling for counselor button and hover effect */
+        .counselor-button a {
+            background-color: #000;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        .counselor-button a:hover {
+            background-color: #333;
+        }
+        /* Additional buttons for grade input and their hover effects */
+        .grade-input button {
+            background-color: #999;
+            color: white;
+            padding: 5px 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .grade-input button:hover {
+            background-color: #666;
+        }
+        /* Help button styling and hover effect */
+        .help-button {
+            background-color: #861818; /* red */
+            color: white;
+            padding: 20px 40px; /* Double size */
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block; /* Ensure it's centered */
+            margin-left: auto;
+            margin-right: auto;
+            transition: background-color 0.2s;
+        }
+        .help-button:hover {
+            background-color: #367c39; /* Darker green */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Sidebar header with resources -->
+        <h1 style="color:#c82e2e;">Resources</h1>
+        <!-- Links to various educational and school resources -->
+        <a href="https://www.forsyth.k12.ga.us/lhs" target="_blank">Lambert Homepage</a>
+        <a href="https://www.khanacademy.org" target="_blank">Khan Academy</a>
+        <a href="https://launchpad.classlink.com/forsyth" target="_blank">Forsyth ClassLink</a>
+        <a href="https://www.instructure.com/canvas" target="_blank">Canvas</a>
+        <a href="https://campus.forsyth.k12.ga.us/campus/portal/students/forsyth.jsp" target="_blank">Infinite Campus</a>
+        <a href="https://account.collegeboard.org/login/login?DURL=https://apclassroom.collegeboard.org/117/assignments?status=assigned" target="_blank">AP Classroom</a>
+    </div>
+    <div class="content">
+        <div class="container">
+            <!-- Logo image -->
+            <div class="logo">
+                <img src="https://s3-us-west-2.amazonaws.com/sportshub2-uploads-prod/files/sites/3715/2022/09/15171508/Updated-Lambert-HS-Logo.png" alt="Lambert Longhorns Logo">
+            </div>
+            <!-- Page heading -->
+            <h2>Lambert High School GPA Calculator</h2>
+            <!-- GPA Calculation form -->
+            <form id="gpaForm">
+                <div id="gradesInput">
+                    <!-- Initial grade input section with options for class type and credits -->
+                    <div class="grade-input">
+                        <label>Grade:</label>
+                        <input type="number" name="grade" required>
+                        <select name="classType">
+                            <option value="normal">On Level/Honors</option>
+                            <option value="ap">AP/Dual Enrollment</option>
+                        </select>
+                        <label>Credits:</label>
+                        <select name="credits">
+                            <option value="1">1 Credit</option>
+                            <option value="0.5">0.5 Credit</option>
+                        </select>
+                        <!-- Buttons to remove current grade input or open help -->
+                        <button type="button" onclick="removeGradeInput(this)">Remove</button>
+                        <button class="help-button" type="button" onclick="window.location.href='file:///Users/chetanchalla/Documents/FBLA%20SLC%20Project/resources.html';">Help</button>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <!-- Buttons to add another grade input, create a transcript, or calculate GPA -->
+                    <button type="button" onclick="addGradeInput()">Add Another Grade</button>
+                    <button type="button" onclick="window.location.href='file:///Users/chetanchalla/Documents/FBLA%20SLC%20Project/calc.html';">Create Transcript</button>
+                    <button type="button" onclick="calculateGPA()">Calculate GPA</button>
+                </div>
+                <!-- Placeholder for calculation result -->
+                <div id="result"></div>
+                <!-- Conditional display of counselor button -->
+                <div class="counselor-button" id="counselorButton">
+                    <a href="https://www.forsyth.k12.ga.us/domain/2329" target="_blank">See Counselor if You Need Help</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Script to dynamically add or remove grade input fields and calculate GPA
+        let gradeInputId = 0;
+
+        // Function to add a new grade input section
+        function addGradeInput() {
+            const gradesInputDiv = document.getElementById('gradesInput');
+            const newInputDiv = document.createElement('div');
+            newInputDiv.className = 'grade-input';
+            newInputDiv.innerHTML = `
+                <label>Grade:</label>
+                <input type="number" name="grade" required>
+                <select name="classType">
+                    <option value="normal">On Level/Honors</option>
+                    <option value="ap">AP/Dual Enrollment</option>
+                </select>
+                <label>Credits:</label>
+                <select name="credits">
+                    <option value="1">1 Credit</option>
+                    <option value="0.5">0.5 Credit</option>
+                </select>
+                <button type="button" onclick="removeGradeInput(this)">Remove</button>
+                <button class="help-button" type="button" onclick="window.location.href='file:///Users/chetanchalla/Documents/FBLA%20SLC%20Project/resources.html';">Help</button>`;
+            gradesInputDiv.appendChild(newInputDiv);
+        }
+
+        // Function to remove a grade input section
+        function removeGradeInput(button) {
+            button.parentElement.remove();
+        }
+
+        // Function to calculate and display GPA based on inputs
+        function calculateGPA() {
+            const grades = document.querySelectorAll('[name="grade"]');
+            const classTypes = document.querySelectorAll('[name="classType"]');
+            const credits = document.querySelectorAll('[name="credits"]');
+            let totalWeightedPoints = 0, totalUnweightedPoints = 0, totalCredits = 0;
+
+            grades.forEach((grade, index) => {
+                const gradeValue = parseFloat(grade.value);
+                const creditValue = parseFloat(credits[index].value);
+                let gradePoints = 0;
+
+                if (gradeValue >= 90) gradePoints = 4.0;
+                else if (gradeValue >= 80) gradePoints = 3.0;
+                else if (gradeValue >= 70) gradePoints = 2.0;
+                else if (gradeValue >= 60) gradePoints = 1.0;
+                else gradePoints = 0;
+
+                totalUnweightedPoints += gradePoints * creditValue;
+
+                if (classTypes[index].value === "ap") gradePoints += 1; // AP classes add an extra point
+                totalWeightedPoints += gradePoints * creditValue;
+
+                totalCredits += creditValue;
+            });
+
+            const weightedGPA = totalWeightedPoints / totalCredits;
+            const unweightedGPA = totalUnweightedPoints / totalCredits;
+            document.getElementById('result').innerHTML = `Weighted GPA: ${weightedGPA.toFixed(2)}<br>Unweighted GPA: ${unweightedGPA.toFixed(2)}`;
+
+            const counselorButton = document.getElementById('counselorButton');
+            counselorButton.style.display = (weightedGPA < 3.0) ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>

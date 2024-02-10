@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Setting viewport for responsive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lambert High School Transcript and GPA Calculator</title>
+    <style>
+        /* General styles for body and input elements */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eee;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        input, select, button {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        /* Styling for buttons */
+        button, .lambert-button {
+            background-color: #d00000;
+            color: white;
+            cursor: pointer;
+            text-decoration: none; /* Ensures that the back link doesn't have an underline */
+        }
+        button:hover, .lambert-button:hover {
+            background-color: #a00000;
+        }
+        /* Styles for the table displaying the transcript */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #d00000;
+            color: white;
+        }
+        /* Styles for the GPA display container */
+        .gpa-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        h2, h3 {
+            color: #d00000;
+        }
+        /* Styles for the school logo */
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            width: 200px;
+        }
+        /* Styling for a back button */
+        .lambert-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back button to navigate to the previous page -->
+    <a href="file:///Users/chetanchalla/Documents/FBLA%20SLC%20Project/lhscalc.html" class="lambert-button">Back to Calculator</a>
+
+    <!-- School logo -->
+    <div class="logo">
+        <img src="https://s3-us-west-2.amazonaws.com/sportshub2-uploads-prod/files/sites/3715/2022/09/15171508/Updated-Lambert-HS-Logo.png" alt="Lambert High School Logo">
+    </div>
+
+    <!-- Container for adding course grades -->
+    <div class="container">
+        <h2>Add Your Course Grades</h2>
+        <input type="text" id="courseName" placeholder="Course Name" required>
+        <input type="number" id="grade" placeholder="Grade" min="0" max="100" required>
+        <select id="classType">
+            <option value="Regular">Regular</option>
+            <option value="Honors">Honors</option>
+            <option value="AP">AP</option>
+        </select>
+        <button type="button" onclick="addCourseAndCalculateGPA()">Add Course</button>
+    </div>
+
+    <!-- Container for displaying the transcript and GPA -->
+    <div class="container">
+        <h2>Transcript</h2>
+        <table id="transcriptTable">
+            <thead>
+                <tr>
+                    <th>Course Name</th>
+                    <th>Grade</th>
+                    <th>Class Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic content: course rows will be added here via JavaScript -->
+            </tbody>
+        </table>
+        <div class="gpa-container">
+            <h3>Unweighted GPA: <span id="unweightedGPA">0.00</span></h3>
+            <h3>Weighted GPA: <span id="weightedGPA">0.00</span></h3>
+        </div>
+    </div>
+
+    <script>
+        let grades = []; // Stores the courses and their details
+
+        // Function to add a course and recalculate GPA
+        function addCourseAndCalculateGPA() {
+            const courseName = document.getElementById('courseName').value;
+            const grade = parseFloat(document.getElementById('grade').value);
+            const classType = document.getElementById('classType').value;
+
+            // Validates the input before adding to the array
+            if (courseName && !isNaN(grade) && classType && grade >= 0 && grade <= 100) {
+                grades.push({ courseName, grade, classType });
+                updateTranscriptTable(); // Updates the transcript table with new data
+                calculateGPA(); // Recalculates GPA based on new data
+                clearForm(); // Clears the input form for the next entry
+            } else {
+                alert('Please fill in all fields correctly.');
+            }
+        }
+
+        // Updates the HTML table with course data
+        function updateTranscriptTable() {
+            const tbody = document.getElementById('transcriptTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ""; // Clears existing rows
+            grades.forEach(course => {
+                const row = tbody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                cell1.textContent = course.courseName;
+                cell2.textContent = course.grade;
+                cell3.textContent = course.classType;
+            });
+        }
+
+        // Calculates both unweighted and weighted GPAs
+        function calculateGPA() {
+            let totalUnweightedPoints = 0;
+            let totalWeightedPoints = 0;
+
+            grades.forEach(course => {
+                const { grade, classType } = course;
+                let point = getGradePoint(grade);
+
+                totalUnweightedPoints += point;
+                if (classType === "AP") {
+                    point += 1; // Adjusts points for AP classes for weighted GPA
+                }
+                totalWeightedPoints += point;
+            });
+
+            const unweightedGPA = (grades.length > 0) ? totalUnweightedPoints / grades.length : 0;
+            const weightedGPA = (grades.length > 0) ? totalWeightedPoints / grades.length : 0;
+
+            document.getElementById('unweightedGPA').textContent = unweightedGPA.toFixed(2);
+            document.getElementById('weightedGPA').textContent = weightedGPA.toFixed(2);
+        }
+
+        // Returns the grade point based on the grade
+        function getGradePoint(grade) {
+            if (grade >= 89.5) return 4;
+            if (grade >= 79.5) return 3;
+            if (grade >= 69.5) return 2;
+            if (grade >= 59.5) return 1;
+            return 0;
+        }
+
+        // Adjusted grade points for AP classes, for demonstration purposes, this could be expanded
+        function getAPGradePoint(grade) {
+            return getGradePoint(grade) + 1; // Adds an extra point for AP classes
+        }
+
+        // Clears the form inputs after adding a course
+        function clearForm() {
+            document.getElementById('courseName').value = '';
+            document.getElementById('grade').value = '';
+            document.getElementById('classType').value = 'Regular';
+        }
+    </script>
+</body>
+</html>
